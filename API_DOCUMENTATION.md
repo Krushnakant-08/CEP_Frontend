@@ -70,8 +70,33 @@ This file documents the expected JSON structure for various API endpoints.
     "totalSpent": 245,
     "totalPages": 523
   },
-  "pendingOrders": [...],
-  "completedOrders": [...]
+  "pendingOrders": [
+    {
+      "id": "ORD_001",
+      "fileName": "Assignment_3.pdf",
+      "pages": 15,
+      "copies": 2,
+      "printType": "blackAndWhite",
+      "paperSize": "A4",
+      "orientation": "portrait",
+      "status": "processing",
+      "price": 30,
+      "uploadedAt": "2024-12-18T16:30:00Z",
+      "estimatedReadyTime": "2024-12-18T18:00:00Z"
+    }
+  ],
+  "completedOrders": [
+    {
+      "id": "ORD_003",
+      "fileName": "Lab_Report.pdf",
+      "price": 55
+    },
+    {
+      "id": "ORD_004",
+      "fileName": "Presentation.pdf",
+      "price": 180
+    }
+  ]
 }
 ```
 

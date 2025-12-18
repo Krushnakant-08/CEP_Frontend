@@ -48,36 +48,12 @@
     {
       "id": "ORD_003",
       "fileName": "Lab_Report.pdf",
-      "pages": 12,
-      "copies": 1,
-      "printType": "color",
-      "paperSize": "A4",
-      "orientation": "portrait",
-      "status": "completed",
-      "price": 55,
-      "uploadedAt": "2024-12-17T10:00:00Z",
-      "completedAt": "2024-12-17T11:30:00Z",
-      "collectedAt": "2024-12-17T15:45:00Z",
-      "receiptUrl": "/receipts/ORD_003.pdf",
-      "paymentMethod": "online",
-      "paymentStatus": "paid"
+      "price": 55
     },
     {
       "id": "ORD_004",
       "fileName": "Presentation.pdf",
-      "pages": 20,
-      "copies": 3,
-      "printType": "color",
-      "paperSize": "A4",
-      "orientation": "landscape",
-      "status": "completed",
-      "price": 180,
-      "uploadedAt": "2024-12-16T14:20:00Z",
-      "completedAt": "2024-12-16T16:00:00Z",
-      "collectedAt": "2024-12-16T18:30:00Z",
-      "receiptUrl": "/receipts/ORD_004.pdf",
-      "paymentMethod": "cash",
-      "paymentStatus": "paid"
+      "price": 180
     }
   ],
   "orderStatuses": [

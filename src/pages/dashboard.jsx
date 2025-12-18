@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from "../components/Header";
 
 function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -13,8 +14,8 @@ function Dashboard() {
 
   // Mock data for completed orders
   const [completedOrders] = useState([
-    { id: 3, fileName: "Lab_Report.pdf", pages: 12, copies: 1, completedAt: "Yesterday" },
-    { id: 4, fileName: "Presentation.pdf", pages: 20, copies: 3, completedAt: "2 days ago" },
+    { id: 3, fileName: "Lab_Report.pdf", price: 55 },
+    { id: 4, fileName: "Presentation.pdf", price: 180 },
   ]);
 
   const handleFileSelect = (e) => {
@@ -71,39 +72,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center">
-                <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">PrintHub</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-gray-900">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">John Student</p>
-                  <p className="text-xs text-gray-500">john@university.edu</p>
-                </div>
-                <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <span className="text-indigo-600 font-semibold">JS</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header userName="John Student" userEmail="john@university.edu" />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -274,9 +243,7 @@ function Dashboard() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">{order.fileName}</p>
-                      <p className="text-sm text-gray-500">
-                        {order.pages} pages • {order.copies} {order.copies > 1 ? 'copies' : 'copy'} • Collected {order.completedAt}
-                      </p>
+                      <p className="text-sm text-gray-600 mt-1 font-semibold">₹{order.price}</p>
                     </div>
                   </div>
                   <button className="text-gray-600 hover:text-gray-700 text-sm font-medium">

@@ -29,22 +29,14 @@ function Orders() {
     {
       id: "ORD_003",
       fileName: "Lab_Report.pdf",
-      pages: 12,
-      copies: 1,
-      printType: "color",
       status: "completed",
-      price: 55,
-      completedAt: "Yesterday"
+      price: 55
     },
     {
       id: "ORD_004",
       fileName: "Presentation.pdf",
-      pages: 20,
-      copies: 3,
-      printType: "color",
       status: "completed",
-      price: 180,
-      completedAt: "2 days ago"
+      price: 180
     }
   ];
 
@@ -167,23 +159,25 @@ function Orders() {
                           {getStatusBadge(order.status)}
                         </div>
                         <p className="text-sm text-gray-500 mt-1">Order ID: {order.id}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
-                          <span>{order.pages} pages</span>
-                          <span>•</span>
-                          <span>{order.copies} {order.copies > 1 ? 'copies' : 'copy'}</span>
-                          <span>•</span>
-                          <span className="capitalize">{order.printType === "blackAndWhite" ? "B&W" : "Color"}</span>
-                          <span>•</span>
-                          <span className="font-semibold text-gray-900">₹{order.price}</span>
-                        </div>
+                        {order.status !== "completed" && (
+                          <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                            <span>{order.pages} pages</span>
+                            <span>•</span>
+                            <span>{order.copies} {order.copies > 1 ? 'copies' : 'copy'}</span>
+                            <span>•</span>
+                            <span className="capitalize">{order.printType === "blackAndWhite" ? "B&W" : "Color"}</span>
+                            <span>•</span>
+                            <span className="font-semibold text-gray-900">₹{order.price}</span>
+                          </div>
+                        )}
+                        {order.status === "completed" && (
+                          <div className="mt-2 text-sm">
+                            <span className="font-semibold text-gray-900">₹{order.price}</span>
+                          </div>
+                        )}
                         {order.estimatedReadyTime && (
                           <p className="text-sm text-gray-500 mt-2">
                             Estimated ready: {new Date(order.estimatedReadyTime).toLocaleString()}
-                          </p>
-                        )}
-                        {order.completedAt && (
-                          <p className="text-sm text-gray-500 mt-2">
-                            Completed: {order.completedAt}
                           </p>
                         )}
                       </div>
