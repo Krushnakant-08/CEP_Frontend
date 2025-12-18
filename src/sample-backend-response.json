@@ -1,0 +1,115 @@
+{
+  "user": {
+    "id": "user_12345",
+    "name": "John Student",
+    "email": "john@university.edu",
+    "studentId": "STU2024001",
+    "phone": "+91 9876543210",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  "stats": {
+    "pendingOrders": 2,
+    "completedOrders": 15,
+    "totalSpent": 245,
+    "totalPages": 523,
+    "thisMonthSpent": 120
+  },
+  "pendingOrders": [
+    {
+      "id": "ORD_001",
+      "fileName": "Assignment_3.pdf",
+      "fileUrl": "/uploads/documents/assignment_3_xyz.pdf",
+      "pages": 15,
+      "copies": 2,
+      "printType": "blackAndWhite",
+      "paperSize": "A4",
+      "orientation": "portrait",
+      "status": "processing",
+      "price": 30,
+      "uploadedAt": "2024-12-18T16:30:00Z",
+      "estimatedReadyTime": "2024-12-18T18:00:00Z"
+    },
+    {
+      "id": "ORD_002",
+      "fileName": "Notes_Chapter5.pdf",
+      "fileUrl": "/uploads/documents/notes_chapter5_abc.pdf",
+      "pages": 8,
+      "copies": 1,
+      "printType": "blackAndWhite",
+      "paperSize": "A4",
+      "orientation": "portrait",
+      "status": "ready",
+      "price": 8,
+      "uploadedAt": "2024-12-18T13:30:00Z",
+      "readyAt": "2024-12-18T14:15:00Z"
+    }
+  ],
+  "completedOrders": [
+    {
+      "id": "ORD_003",
+      "fileName": "Lab_Report.pdf",
+      "pages": 12,
+      "copies": 1,
+      "printType": "color",
+      "paperSize": "A4",
+      "orientation": "portrait",
+      "status": "completed",
+      "price": 55,
+      "uploadedAt": "2024-12-17T10:00:00Z",
+      "completedAt": "2024-12-17T11:30:00Z",
+      "collectedAt": "2024-12-17T15:45:00Z",
+      "receiptUrl": "/receipts/ORD_003.pdf",
+      "paymentMethod": "online",
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "ORD_004",
+      "fileName": "Presentation.pdf",
+      "pages": 20,
+      "copies": 3,
+      "printType": "color",
+      "paperSize": "A4",
+      "orientation": "landscape",
+      "status": "completed",
+      "price": 180,
+      "uploadedAt": "2024-12-16T14:20:00Z",
+      "completedAt": "2024-12-16T16:00:00Z",
+      "collectedAt": "2024-12-16T18:30:00Z",
+      "receiptUrl": "/receipts/ORD_004.pdf",
+      "paymentMethod": "cash",
+      "paymentStatus": "paid"
+    }
+  ],
+  "orderStatuses": [
+    {
+      "key": "pending",
+      "label": "Pending",
+      "description": "Order received, awaiting processing"
+    },
+    {
+      "key": "processing",
+      "label": "Processing",
+      "description": "Document is being printed"
+    },
+    {
+      "key": "ready",
+      "label": "Ready to Collect",
+      "description": "Order is ready for pickup"
+    },
+    {
+      "key": "completed",
+      "label": "Completed",
+      "description": "Order collected by student"
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelled",
+      "description": "Order was cancelled"
+    }
+  ],
+  "pricingInfo": {
+    "blackAndWhitePerPage": 1,
+    "colorPerPage": 5,
+    "currency": "INR"
+  }
+}
