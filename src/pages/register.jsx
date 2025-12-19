@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    studentId: "",
     phone: "",
     password: "",
     confirmPassword: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const apiBaseUrl = "http://localhost:5000";
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -23,18 +26,33 @@ function Register() {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
     setIsLoading(true);
+    setError(null);
     
     // Add your registration logic here
     console.log("Registration attempt:", formData);
     
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    await axios.post(`${apiBaseUrl}/api/auth/register`, {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password
+    })
+      .then(response => {
+        console.log("Registration successful:", response.data);
+        setIsLoading(false);
+        // Redirect to login
+        navigate('/login');
+      })
+      .catch(error => {
+        console.error("Registration failed:", error);
+        setError("Registration failed. Please try again.");
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -82,22 +100,6 @@ function Register() {
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
               placeholder="student@university.edu"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
-              Student ID
-            </label>
-            <input
-              id="studentId"
-              name="studentId"
-              type="text"
-              required
-              value={formData.studentId}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-              placeholder="STU2024001"
             />
           </div>
 
@@ -156,6 +158,7 @@ function Register() {
           >
             {isLoading ? "Creating Account..." : "Sign Up"}
           </button>
+          {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
         </form>
 
         {/* Sign In Link */}

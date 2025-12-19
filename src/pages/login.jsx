@@ -1,21 +1,40 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const apiBaseUrl = "http://localhost:5000";
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Add your authentication logic here
     console.log("Login attempt:", { email, password });
-    
+
     // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+
+    await axios.post(`${apiBaseUrl}/api/auth/login`, { email: email, password: password })
+      .then(response => {
+        console.log("Login successful:", response.data);
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          navigate('/dashboard');
+        }
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Login failed:", error);
+        setError("Login failed. Please check your credentials and try again.");
+        setIsLoading(false);
+
+      });
+
   };
 
   return (
@@ -81,6 +100,7 @@ function Login() {
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </button>
+          {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
         </form>
 
         {/* Divider */}
@@ -95,7 +115,7 @@ function Login() {
 
         {/* Sign Up Link */}
         <div className="text-center">
-          <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
+          <a href="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">
             Create a student account
           </a>
         </div>
