@@ -21,8 +21,7 @@ This file documents the expected JSON structure for various API endpoints.
   "user": {
     "id": "user_12345",
     "name": "John Student",
-    "email": "john@university.edu",
-    "studentId": "STU2024001"
+    "email": "john@university.edu"
   },
   "expiresIn": 86400
 }
@@ -35,7 +34,6 @@ This file documents the expected JSON structure for various API endpoints.
   "name": "John Student",
   "email": "john@university.edu",
   "password": "securePassword123",
-  "studentId": "STU2024001",
   "phone": "+91 9876543210"
 }
 ```
@@ -61,7 +59,6 @@ This file documents the expected JSON structure for various API endpoints.
     "id": "user_12345",
     "name": "John Student",
     "email": "john@university.edu",
-    "studentId": "STU2024001",
     "phone": "+91 9876543210"
   },
   "stats": {
@@ -80,7 +77,7 @@ This file documents the expected JSON structure for various API endpoints.
       "paperSize": "A4",
       "orientation": "portrait",
       "status": "processing",
-      "price": 30,
+      "price": 60,
       "uploadedAt": "2024-12-18T16:30:00Z",
       "estimatedReadyTime": "2024-12-18T18:00:00Z"
     }
@@ -131,7 +128,7 @@ notes: "Optional instructions"
     "copies": 2,
     "printType": "blackAndWhite",
     "status": "pending",
-    "price": 30,
+    "price": 60,
     "estimatedReadyTime": "2024-12-18T18:00:00Z"
   }
 }
@@ -158,7 +155,7 @@ notes: "Optional instructions"
       "pages": 15,
       "copies": 2,
       "status": "processing",
-      "price": 30,
+      "price": 60,
       "uploadedAt": "2024-12-18T16:30:00Z"
     }
   ],
@@ -186,7 +183,7 @@ notes: "Optional instructions"
     "printType": "blackAndWhite",
     "bindingType": "stapler",
     "status": "ready",
-    "price": 35,
+    "price": 65,
     "uploadedAt": "2024-12-18T16:30:00Z",
     "readyAt": "2024-12-18T17:45:00Z",
     "notes": "Please bind with stapler"
@@ -202,7 +199,7 @@ notes: "Optional instructions"
 {
   "success": true,
   "message": "Order cancelled successfully",
-  "refundAmount": 30
+  "refundAmount": 60
 }
 ```
 
@@ -226,8 +223,8 @@ notes: "Optional instructions"
 {
   "success": true,
   "pricing": {
-    "blackAndWhitePerPage": 1,
-    "colorPerPage": 5,
+    "blackAndWhitePerPage": 2,
+    "colorPerPage": 10,
     "bindingTypes": {
       "none": 0,
       "stapler": 5,
@@ -285,7 +282,6 @@ notes: "Optional instructions"
     "id": "user_12345",
     "name": "John Student",
     "email": "john@university.edu",
-    "studentId": "STU2024001",
     "phone": "+91 9876543210",
     "createdAt": "2024-01-15T10:30:00Z",
     "totalOrders": 17,
