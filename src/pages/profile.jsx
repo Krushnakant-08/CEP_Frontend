@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
-    name: "John Student",
-    email: "john@university.edu",
-    studentId: "STU2024001",
-    phone: "+91 9876543210"
+    name: "",
+    email: "",
+    phone: ""
   });
 
   const [editData, setEditData] = useState({ ...userData });
+  const apiBaseUrl = "http://localhost:5000";
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${apiBaseUrl}/api/user/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.data.user) {
+          const { name, email, phone } = response.data.user;
+          setUserData({ name, email, phone });
+          setEditData({ name, email, phone });
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -22,9 +43,20 @@ function Profile() {
     setEditData({ ...userData });
   };
 
-  const handleSave = () => {
-    setUserData({ ...editData });
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`${apiBaseUrl}/api/user/profile`, editData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setUserData({ ...editData });
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      alert('Failed to update profile. Please try again.');
+    }
   };
 
   const handleChange = (e) => {
@@ -71,7 +103,6 @@ function Profile() {
               <div className="text-white">
                 <h1 className="text-3xl font-bold">{userData.name}</h1>
                 <p className="text-indigo-100 mt-1">{userData.email}</p>
-                <p className="text-indigo-100 text-sm mt-1">Student ID: {userData.studentId}</p>
               </div>
             </div>
           </div>
@@ -125,12 +156,6 @@ function Profile() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                 <p className="text-gray-900 text-lg">{userData.email}</p>
                 <p className="text-sm text-gray-500 mt-1">Email cannot be changed</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
-                <p className="text-gray-900 text-lg">{userData.studentId}</p>
-                <p className="text-sm text-gray-500 mt-1">Student ID cannot be changed</p>
               </div>
 
               <div>

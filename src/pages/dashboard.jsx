@@ -1,22 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "../components/Header";
+// import { calculatePrice } from "../utils/pricing";
 
 function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [copies, setCopies] = useState(1);
+  const [printType, setPrintType] = useState("blackAndWhite");
+  const [dashboardData, setDashboardData] = useState(null);
+  const apiBaseUrl = "http://localhost:5000";
 
-  // Mock data for pending orders
-  const [pendingOrders, setPendingOrders] = useState([
-    { id: 1, fileName: "Assignment_3.pdf", pages: 15, copies: 2, status: "processing", uploadedAt: "2 hours ago" },
-    { id: 2, fileName: "Notes_Chapter5.pdf", pages: 8, copies: 1, status: "ready", uploadedAt: "5 hours ago" },
-  ]);
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
 
-  // Mock data for completed orders
-  const [completedOrders] = useState([
-    { id: 3, fileName: "Lab_Report.pdf", price: 55 },
-    { id: 4, fileName: "Presentation.pdf", price: 180 },
-  ]);
+  // Fetch dashboard data on mount
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${apiBaseUrl}/api/dashboard`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setDashboardData(response.data);
+        if (response.data.pendingOrders) setPendingOrders(response.data.pendingOrders);
+        if (response.data.completedOrders) setCompletedOrders(response.data.completedOrders);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+      }
+    };
+    fetchDashboardData();
+  }, []);
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -27,36 +42,45 @@ function Dashboard() {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFile) return;
 
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          // Add to pending orders
-          setPendingOrders([
-            {
-              id: Date.now(),
-              fileName: selectedFile.name,
-              pages: Math.floor(Math.random() * 20) + 1,
-              copies: 1,
-              status: "processing",
-              uploadedAt: "Just now"
-            },
-            ...pendingOrders
-          ]);
-          setSelectedFile(null);
-          return 0;
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('copies', copies);
+      formData.append('printType', printType);
+      formData.append('paperSize', 'A4');
+      formData.append('orientation', 'portrait');
+
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${apiBaseUrl}/api/orders/upload`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percentCompleted);
         }
-        return prev + 10;
       });
-    }, 200);
+
+      if (response.data.success) {
+        setPendingOrders([response.data.order, ...pendingOrders]);
+        setSelectedFile(null);
+        setCopies(1);
+        setPrintType("blackAndWhite");
+      }
+      setIsUploading(false);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Failed to upload file. Please try again.');
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -72,7 +96,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header userName="John Student" userEmail="john@university.edu" />
+      <Header userName={dashboardData?.user?.name || "User"} userEmail={dashboardData?.user?.email || ""} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -151,13 +175,23 @@ function Dashboard() {
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Number of Copies</label>
-                  <input type="number" min="1" defaultValue="1" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" />
+                  <input 
+                    type="number" 
+                    min="1" 
+                    value={copies}
+                    onChange={(e) => setCopies(parseInt(e.target.value) || 1)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Print Type</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
-                    <option>Black & White</option>
-                    <option>Color</option>
+                  <select 
+                    value={printType}
+                    onChange={(e) => setPrintType(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                  >
+                    <option value="blackAndWhite">Black & White (₹2/page)</option>
+                    <option value="color">Color (₹10/page)</option>
                   </select>
                 </div>
               </div>

@@ -1,44 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+// import { calculatePrice } from "../utils/pricing";
 
 function Orders() {
   const [activeTab, setActiveTab] = useState("all");
+  const [orders, setOrders] = useState([]);
+  const apiBaseUrl = "http://localhost:5000";
 
-  const orders = [
-    {
-      id: "ORD_001",
-      fileName: "Assignment_3.pdf",
-      pages: 15,
-      copies: 2,
-      printType: "blackAndWhite",
-      status: "processing",
-      price: 30,
-      uploadedAt: "2024-12-18T16:30:00Z",
-      estimatedReadyTime: "2024-12-18T18:00:00Z"
-    },
-    {
-      id: "ORD_002",
-      fileName: "Notes_Chapter5.pdf",
-      pages: 8,
-      copies: 1,
-      printType: "blackAndWhite",
-      status: "ready",
-      price: 8,
-      uploadedAt: "2024-12-18T13:30:00Z"
-    },
-    {
-      id: "ORD_003",
-      fileName: "Lab_Report.pdf",
-      status: "completed",
-      price: 55
-    },
-    {
-      id: "ORD_004",
-      fileName: "Presentation.pdf",
-      status: "completed",
-      price: 180
-    }
-  ];
+  // Fetch orders on mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${apiBaseUrl}/api/orders`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setOrders(response.data.orders || []);
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+        setOrders([]);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const filteredOrders = orders.filter(order => {
     if (activeTab === "all") return true;
