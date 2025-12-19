@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function Header({ userName = "John Student", userEmail = "john@university.edu" }) {
+function Header({ userName = "User", userEmail = "" }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
