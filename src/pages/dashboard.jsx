@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
-// import { calculatePrice } from "../utils/pricing";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function Dashboard() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -10,6 +14,7 @@ function Dashboard() {
   const [copies, setCopies] = useState(1);
   const [printType, setPrintType] = useState("blackAndWhite");
   const [dashboardData, setDashboardData] = useState(null);
+  const [pdfPageCount, setPdfPageCount] = useState(0);
   const apiBaseUrl = "http://localhost:5000";
 
   const [pendingOrders, setPendingOrders] = useState([]);
@@ -33,12 +38,28 @@ function Dashboard() {
     fetchDashboardData();
   }, []);
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = async (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "application/pdf") {
+    // console.log('Selected file:', file.name);
+    if (file && (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/png")) {
       setSelectedFile(file);
+      
+      // Extract page count if it's a PDF
+      if (file.type === "application/pdf") {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          setPdfPageCount(pdf.numPages);
+        } catch (error) {
+          console.error('Failed to read PDF page count:', error);
+          setPdfPageCount(0);
+        }
+      } else {
+        // For images, set page count to 1
+        setPdfPageCount(1);
+      }
     } else {
-      alert("Please select a PDF file");
+      alert("Please select a PDF, JPG, or PNG file");
     }
   };
 
@@ -49,30 +70,51 @@ function Dashboard() {
     setUploadProgress(0);
 
     try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('copies', copies);
-      formData.append('printType', printType);
-      formData.append('paperSize', 'A4');
-      formData.append('orientation', 'portrait');
+      // First, upload to Cloudinary
+      const cloudinaryFormData = new FormData();
+      cloudinaryFormData.append('file', selectedFile);
+      cloudinaryFormData.append('upload_preset', 'Community_Prog'); // Replace with your Cloudinary upload preset
+      
+      setUploadProgress(20);
+      const cloudinaryResponse = await axios.post(
+        `https://api.cloudinary.com/v1_1/dmkvdl7vk/auto/upload`, // Replace your_cloud_name
+        cloudinaryFormData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 50) / progressEvent.total);
+            setUploadProgress(percentCompleted);
+          }
+        }
+      );
+
+      const fileUrl = cloudinaryResponse.data.secure_url;
+      setUploadProgress(60);
+
+      // Then, send the Cloudinary URL to backend
+      const orderData = {
+        fileUrl,
+        fileName: selectedFile.name,
+        copies,
+        printType,
+        pages: pdfPageCount
+      };
 
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${apiBaseUrl}/api/orders/upload`, formData, {
+      const response = await axios.post(`${apiBaseUrl}/api/orders/upload`, orderData, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(percentCompleted);
+          'Content-Type': 'application/json'
         }
       });
+
+      setUploadProgress(100);
 
       if (response.data.success) {
         setPendingOrders([response.data.order, ...pendingOrders]);
         setSelectedFile(null);
         setCopies(1);
         setPrintType("blackAndWhite");
+        setPdfPageCount(0);
       }
       setIsUploading(false);
     } catch (error) {
@@ -141,12 +183,12 @@ function Dashboard() {
             <div className="mt-4">
               <label htmlFor="file-upload" className="cursor-pointer">
                 <span className="mt-2 block text-sm font-medium text-gray-900">
-                  {selectedFile ? selectedFile.name : "Drop your PDF here, or click to browse"}
+                  {selectedFile ? `${selectedFile.name} (${pdfPageCount} ${pdfPageCount === 1 ? 'page' : 'pages'})` : "Drop your PDF here, or click to browse"}
                 </span>
                 <input
                   id="file-upload"
                   type="file"
-                  accept=".pdf"
+                  accept=".pdf,.jpg,.png"
                   onChange={handleFileSelect}
                   className="sr-only"
                 />
@@ -157,8 +199,11 @@ function Dashboard() {
 
           {selectedFile && (
             <div className="mt-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-gray-700">Print Options</span>
+                <span className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                  {pdfPageCount} {pdfPageCount === 1 ? 'Page' : 'Pages'}
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
