@@ -336,4 +336,4 @@ All error responses follow this structure:
 - `INVALID_FILE_TYPE`: File is not a PDF
 - `ORDER_NOT_FOUND`: Order ID doesn't exist
 - `PAYMENT_FAILED`: Payment processing failed
-- `ORDER_CANNOT_BE_CANCELLED`: Order is already being processed
+- `ORDER_CAANNOT_BE_CANCELLED`: Order is already being processed

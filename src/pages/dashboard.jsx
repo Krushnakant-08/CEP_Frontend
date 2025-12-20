@@ -101,7 +101,7 @@ function Dashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="shrink-0 bg-blue-100 rounded-lg p-3">
@@ -124,20 +124,8 @@ function Dashboard() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Completed</p>
+                <p className="text-sm font-medium text-gray-600">Completed Orders</p>
                 <p className="text-2xl font-bold text-gray-900">{completedOrders.length}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="shrink-0 bg-purple-100 rounded-lg p-3 flex items-center justify-center">
-                <span className="text-2xl font-bold text-purple-600"> ₹ </span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                <p className="text-2xl font-bold text-gray-900">₹245</p>
               </div>
             </div>
           </div>
