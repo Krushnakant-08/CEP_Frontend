@@ -27,7 +27,10 @@ function Profile() {
           setEditData({ name, email, phone });
         }
       } catch (error) {
-        console.error('Failed to fetch profile:', error);
+        // console.error('Failed to fetch profile:', error);
+        if(error.response && error.response.statusText === 'Unauthorized') {
+          window.location.href = '/login';
+        }
       }
     };
     fetchProfile();

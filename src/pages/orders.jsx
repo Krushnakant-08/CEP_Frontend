@@ -18,7 +18,10 @@ function Orders() {
         });
         setOrders(response.data.orders || []);
       } catch (error) {
-        console.error('Failed to fetch orders:', error);
+        // console.error('Failed to fetch orders:', error);
+        if(error.response && error.response.statusText === 'Unauthorized') {
+          window.location.href = '/login';
+        }
         setOrders([]);
       }
     };

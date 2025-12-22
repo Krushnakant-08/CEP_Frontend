@@ -32,7 +32,10 @@ function Dashboard() {
         if (response.data.pendingOrders) setPendingOrders(response.data.pendingOrders);
         if (response.data.completedOrders) setCompletedOrders(response.data.completedOrders);
       } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
+        // console.error('Failed to fetch dashboard data:', error);
+        if(error.response && error.response.statusText === 'Unauthorized') {
+          window.location.href = '/login';
+        }
       }
     };
     fetchDashboardData();
