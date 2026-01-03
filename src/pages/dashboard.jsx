@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
+import Details from "../components/Details";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 
@@ -19,6 +20,7 @@ function Dashboard() {
 
   const [pendingOrders, setPendingOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   // Fetch dashboard data on mount
   useEffect(() => {
@@ -32,7 +34,10 @@ function Dashboard() {
         if (response.data.pendingOrders) setPendingOrders(response.data.pendingOrders);
         if (response.data.completedOrders) setCompletedOrders(response.data.completedOrders);
       } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
+        // console.error('Failed to fetch dashboard data:', error);
+        if(error.response && error.response.statusText === 'Unauthorized') {
+          window.location.href = '/login';
+        }
       }
     };
     fetchDashboardData();
@@ -43,6 +48,7 @@ function Dashboard() {
     // console.log('Selected file:', file.name);
     if (file && (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/png")) {
       setSelectedFile(file);
+      // console.log('File selected:', file.name);
       
       // Extract page count if it's a PDF
       if (file.type === "application/pdf") {
@@ -72,6 +78,7 @@ function Dashboard() {
     try {
       // First, upload to Cloudinary
       const cloudinaryFormData = new FormData();
+      console.log('Uploading file to Cloudinary:', selectedFile);
       cloudinaryFormData.append('file', selectedFile);
       cloudinaryFormData.append('upload_preset', 'Community_Prog'); // Replace with your Cloudinary upload preset
       
@@ -86,7 +93,7 @@ function Dashboard() {
           }
         }
       );
-
+      console.log('Cloudinary upload response:', cloudinaryResponse.data);
       const fileUrl = cloudinaryResponse.data.secure_url;
       setUploadProgress(60);
 
@@ -129,8 +136,8 @@ function Dashboard() {
     switch (status) {
       case "processing":
         return "bg-yellow-100 text-yellow-800";
-      case "ready":
-        return "bg-green-100 text-green-800";
+      case "canceled":
+        return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -280,7 +287,9 @@ function Dashboard() {
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                         {order.status === "processing" ? "Processing" : "Ready to Collect"}
                       </span>
-                      <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                      <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                        onClick={() => setSelectedOrder(order)}
+                      >
                         View Details
                       </button>
                     </div>
@@ -322,6 +331,21 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Details Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedOrder(null)}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <Details order={selectedOrder} variant="pink" />
+            <button 
+              onClick={() => setSelectedOrder(null)}
+              className="mt-4 w-full bg-white text-gray-900 py-2 px-4 rounded-lg font-semibold hover:bg-gray-100 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
