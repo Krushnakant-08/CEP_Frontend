@@ -164,7 +164,7 @@ function XeroxLogin() {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don't have a shop account?{" "}
-            <Link to="/xerox-register" className="text-purple-600 hover:text-purple-500 font-semibold">
+            <Link to="/xeroxRegister" className="text-purple-600 hover:text-purple-500 font-semibold">
               Register your shop
             </Link>
           </p>
