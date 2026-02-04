@@ -12,7 +12,7 @@ function Register() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const handleChange = (e) => {

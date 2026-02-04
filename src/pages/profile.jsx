@@ -11,7 +11,7 @@ function Profile() {
   });
 
   const [editData, setEditData] = useState({ ...userData });
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch user profile on mount
   useEffect(() => {
