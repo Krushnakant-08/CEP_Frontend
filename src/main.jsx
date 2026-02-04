@@ -19,11 +19,11 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/xerox-login" element={<XeroxLogin />} />
+        <Route path="/xeroxLogin" element={<XeroxLogin />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/xerox-register" element={<XeroxRegister />} />
+        <Route path="/xeroxRegister" element={<XeroxRegister />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/xerox-dashboard" element={<ProtectedRoute><XeroxDashboard /></ProtectedRoute>} />
+        <Route path="/xeroxDashboard" element={<ProtectedRoute><XeroxDashboard /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
