@@ -37,7 +37,7 @@ function XeroxLogin() {
       localStorage.setItem('xerox', JSON.stringify(response.data.xerox));
       
       // Redirect to xerox dashboard
-      navigate('/xerox-dashboard');
+      navigate('/xeroxDashboard');
     } catch (error) {
       console.error("Login failed:", error);
       setError(error.response?.data?.message || "Login failed. Please check your credentials.");
