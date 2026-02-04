@@ -54,7 +54,7 @@ function Header({ userName = "User", userEmail = "" }) {
             className="flex items-center group transition-transform hover:scale-105 duration-300"
           >
             <div className="shrink-0 flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:rotate-6">
+              <div className="w-10 h-10 bg-linear-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:rotate-6">
                 <svg
                   className="w-6 h-6 text-white"
                   fill="none"
@@ -69,7 +69,7 @@ function Header({ userName = "User", userEmail = "" }) {
                   />
                 </svg>
               </div>
-              <span className="ml-3 text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="ml-3 text-xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 PrintHub
               </span>
             </div>
@@ -107,7 +107,7 @@ function Header({ userName = "User", userEmail = "" }) {
                   <p className="text-xs text-gray-500">{userEmail}</p>
                 </div>
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-md ring-2 ring-white">
+                  <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-md ring-2 ring-white">
                     <span className="text-white font-bold text-sm">
                       {getUserInitials(userName)}
                     </span>
