@@ -15,7 +15,7 @@ function Dashboard() {
   const [printType, setPrintType] = useState("blackAndWhite");
   const [dashboardData, setDashboardData] = useState(null);
   const [pdfPageCount, setPdfPageCount] = useState(0);
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const [pendingOrders, setPendingOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);

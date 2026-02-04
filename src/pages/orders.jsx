@@ -6,7 +6,7 @@ import axios from "axios";
 function Orders() {
   const [activeTab, setActiveTab] = useState("all");
   const [orders, setOrders] = useState([]);
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch orders on mount
   useEffect(() => {

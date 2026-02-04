@@ -10,16 +10,16 @@ function XeroxLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
-
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -31,7 +31,6 @@ function XeroxLogin() {
         password: formData.password
       });
       
-      console.log("Xerox shop login successful:", response.data);
       
       // Store token and xerox info
       localStorage.setItem('xeroxToken', response.data.token);

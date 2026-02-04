@@ -7,7 +7,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiBaseUrl = "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,7 +15,6 @@ function Login() {
     setIsLoading(true);
 
     // Add your authentication logic here
-    console.log("Login attempt:", { email, password });
 
     // Simulate API call
 
