@@ -119,6 +119,16 @@ function Login() {
           </a>
         </div>
 
+        {/* Xerox Shop Link */}
+        <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+          <p className="text-sm text-gray-500">
+            Are you a xerox shop owner?{" "}
+            <a href="/xerox-login" className="text-purple-600 hover:text-purple-700 font-medium">
+              Login to Shop Portal
+            </a>
+          </p>
+        </div>
+
         {/* Info Banner */}
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start">

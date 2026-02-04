@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
-import Details from "../components/Details";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs?url";
 
@@ -21,6 +20,8 @@ function Dashboard() {
   const [pendingOrders, setPendingOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // Fetch dashboard data on mount
   useEffect(() => {
@@ -78,13 +79,19 @@ function Dashboard() {
     try {
       // First, upload to Cloudinary
       const cloudinaryFormData = new FormData();
-      console.log('Uploading file to Cloudinary:', selectedFile);
-      cloudinaryFormData.append('file', selectedFile);
-      cloudinaryFormData.append('upload_preset', 'Community_Prog'); // Replace with your Cloudinary upload preset
+      // console.log('Uploading file to Cloudinary:', selectedFile);
       
+      cloudinaryFormData.append('file', selectedFile);
+      cloudinaryFormData.append('upload_preset', 'Community_Prog'); 
+
+      // 1. DETERMINE RESOURCE TYPE
+      const resourceType = selectedFile.type === 'application/pdf' ? 'raw' : 'auto';
+
       setUploadProgress(20);
+      
       const cloudinaryResponse = await axios.post(
-        `https://api.cloudinary.com/v1_1/dmkvdl7vk/auto/upload`, // Replace your_cloud_name
+        // 2. USE THE DYNAMIC URL
+        `https://api.cloudinary.com/v1_1/dmkvdl7vk/${resourceType}/upload`, 
         cloudinaryFormData,
         {
           onUploadProgress: (progressEvent) => {
@@ -93,11 +100,14 @@ function Dashboard() {
           }
         }
       );
-      console.log('Cloudinary upload response:', cloudinaryResponse.data);
+
+      // console.log('Cloudinary upload response:', cloudinaryResponse.data);
+      
+      // 3. GET THE LINK
+      // The response will now contain the correct /raw/ or /image/ url automatically
       const fileUrl = cloudinaryResponse.data.secure_url;
       setUploadProgress(60);
 
-      // Then, send the Cloudinary URL to backend
       const orderData = {
         fileUrl,
         fileName: selectedFile.name,
@@ -105,7 +115,8 @@ function Dashboard() {
         printType,
         pages: pdfPageCount
       };
-
+      // console.log('Sending order data to backend:', orderData);
+      
       const token = localStorage.getItem('token');
       const response = await axios.post(`${apiBaseUrl}/api/orders/upload`, orderData, {
         headers: {
@@ -114,18 +125,22 @@ function Dashboard() {
         }
       });
 
+      // console.log('Backend response:', response.data);
       setUploadProgress(100);
 
       if (response.data.success) {
+        // console.log('Order created:', response.data.order);
+        // console.log('File URL:', response.data.order.fileUrl);
         setPendingOrders([response.data.order, ...pendingOrders]);
         setSelectedFile(null);
         setCopies(1);
         setPrintType("blackAndWhite");
         setPdfPageCount(0);
+        // alert('Document uploaded successfully!');
       }
       setIsUploading(false);
     } catch (error) {
-      console.error('Upload failed:', error);
+      // console.error('Upload failed:', error);
       alert('Failed to upload file. Please try again.');
       setIsUploading(false);
       setUploadProgress(0);
@@ -283,14 +298,24 @@ function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                         {order.status === "processing" ? "Processing" : "Ready to Collect"}
                       </span>
+                      {order.fileUrl && (
+                        <a
+                          href={order.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition font-medium"
+                        >
+                          View
+                        </a>
+                      )}
                       <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
                         onClick={() => setSelectedOrder(order)}
                       >
-                        View Details
+                        Details
                       </button>
                     </div>
                   </div>
@@ -322,9 +347,24 @@ function Dashboard() {
                       <p className="text-sm text-gray-600 mt-1 font-semibold">₹{order.price}</p>
                     </div>
                   </div>
-                  <button className="text-gray-600 hover:text-gray-700 text-sm font-medium">
-                    Download Receipt
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    {order.fileUrl && (
+                      <a
+                        href={order.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition font-medium"
+                      >
+                        View
+                      </a>
+                    )}
+                    <button 
+                      onClick={() => setSelectedOrder(order)}
+                      className="text-gray-600 hover:text-gray-700 text-sm font-medium"
+                    >
+                      Receipt
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -334,15 +374,139 @@ function Dashboard() {
 
       {/* Details Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedOrder(null)}>
-          <div onClick={(e) => e.stopPropagation()}>
-            <Details order={selectedOrder} variant="pink" />
-            <button 
-              onClick={() => setSelectedOrder(null)}
-              className="mt-4 w-full bg-white text-gray-900 py-2 px-4 rounded-lg font-semibold hover:bg-gray-100 transition"
-            >
-              Close
-            </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-900">Order Details</h2>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600">Order ID</p>
+                  <p className="font-medium">{selectedOrder.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
+                    {selectedOrder.status === "processing" ? "Processing" : selectedOrder.status === "ready" ? "Ready to Collect" : "Completed"}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">File Name</p>
+                  <p className="font-medium">{selectedOrder.fileName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Pages</p>
+                  <p className="font-medium">{selectedOrder.pages}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Copies</p>
+                  <p className="font-medium">{selectedOrder.copies}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Print Type</p>
+                  <p className="font-medium">
+                    {selectedOrder.printType === "blackAndWhite" ? "Black & White" : "Color"}
+                  </p>
+                </div>
+                {selectedOrder.paperSize && (
+                  <div>
+                    <p className="text-sm text-gray-600">Paper Size</p>
+                    <p className="font-medium">{selectedOrder.paperSize}</p>
+                  </div>
+                )}
+                {selectedOrder.orientation && (
+                  <div>
+                    <p className="text-sm text-gray-600">Orientation</p>
+                    <p className="font-medium capitalize">{selectedOrder.orientation}</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm text-gray-600">Price</p>
+                  <p className="font-medium text-lg text-indigo-600">₹{selectedOrder.price}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Ordered At</p>
+                  <p className="font-medium">{selectedOrder.uploadedAt || new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                </div>
+              </div>
+
+              {/* File URL Info */}
+              {selectedOrder.fileUrl && (
+                <div className="mt-4 pt-4 border-t">
+                  <h3 className="font-semibold text-gray-900 mb-2">Document</h3>
+                  <a
+                    href={selectedOrder.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download
+                  </a>
+                </div>
+              )}
+
+              {/* Notes */}
+              {selectedOrder.notes && (
+                <div className="mt-4 pt-4 border-t">
+                  <h3 className="font-semibold text-gray-900 mb-2">Notes</h3>
+                  <p className="text-sm text-gray-600">{selectedOrder.notes}</p>
+                </div>
+              )}
+
+              {/* Estimated Ready Time */}
+              {selectedOrder.estimatedReadyTime && (
+                <div className="mt-4 pt-4 border-t">
+                  <h3 className="font-semibold text-gray-900 mb-2">Estimated Ready Time</h3>
+                  <p className="text-sm text-gray-600">{new Date(selectedOrder.estimatedReadyTime).toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Preview Modal */}
+      {showPdfPreview && previewUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg w-full h-full max-w-6xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-xl font-bold text-gray-900">Document Preview</h2>
+              <button
+                onClick={() => {
+                  setShowPdfPreview(false);
+                  setPreviewUrl(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden p-4">
+              {/* Try direct iframe first */}
+              <iframe
+                src={`${previewUrl}#toolbar=0`}
+                className="w-full h-full border rounded"
+                title="Document Preview"
+                onError={(e) => {
+                  console.error('Failed to load PDF in iframe:', e);
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
