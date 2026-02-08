@@ -11,6 +11,8 @@ import Dashboard from './pages/dashboard.jsx'
 import Profile from './pages/profile.jsx'
 import Orders from './pages/orders.jsx'
 import Help from './pages/help.jsx'
+import VerifyEmail from './pages/verifyEmail.jsx'
+import ResendVerification from './pages/resendVerification.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -22,6 +24,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/xeroxLogin" element={<XeroxLogin />} />
         <Route path="/register" element={<Register />} />
         <Route path="/xeroxRegister" element={<XeroxRegister />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/resend-verification" element={<ResendVerification />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/xeroxDashboard" element={<ProtectedRoute><XeroxDashboard /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
@@ -7,6 +7,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showResendVerification, setShowResendVerification] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -29,9 +30,16 @@ function Login() {
       })
       .catch(error => {
         console.error("Login failed:", error);
-        setError("Login failed. Please check your credentials and try again.");
+        if (error.response?.data?.error?.code === "EMAIL_NOT_VERIFIED") {
+          setError("Your email is not verified. Please check your inbox for the verification email.");
+          setShowResendVerification(true);
+        } else if (error.response?.data?.error?.message) {
+          setError(error.response.data.error.message);
+        } else {
+          setError("Login failed. Please check your credentials and try again.");
+        }
         setIsLoading(false);
-        });
+      });
 
   };
 
@@ -98,6 +106,21 @@ function Login() {
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </button>
+
+          {/* Resend Verification Link */}
+          {showResendVerification && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+              <p className="text-sm text-yellow-800 mb-2">
+                Didn't receive the email?
+              </p>
+              <Link
+                to="/resend-verification"
+                className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+              >
+                Resend Verification Email
+              </Link>
+            </div>
+          )}
           {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
         </form>
 

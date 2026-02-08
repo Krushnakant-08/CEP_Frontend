@@ -12,6 +12,7 @@ function Register() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -45,12 +46,16 @@ function Register() {
       .then(response => {
         console.log("Registration successful:", response.data);
         setIsLoading(false);
-        // Redirect to login
-        navigate('/login');
+        setSuccess(true);
+        // Don't navigate immediately - show verification message
       })
       .catch(error => {
         console.error("Registration failed:", error);
-        setError("Registration failed. Please try again.");
+        if (error.response?.data?.error) {
+          setError(error.response.data.error.message);
+        } else {
+          setError("Registration failed. Please try again.");
+        }
         setIsLoading(false);
       });
   };
@@ -68,6 +73,42 @@ function Register() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
           <p className="text-gray-600">Join PrintHub Student Portal</p>
         </div>
+
+        {/* Success Message */}
+        {success && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-start">
+              <svg
+                className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <div>
+                <p className="text-sm font-semibold text-green-800 mb-1">
+                  Registration Successful!
+                </p>
+                <p className="text-sm text-green-700">
+                  We've sent a verification email to <strong>{formData.email}</strong>.
+                  Please check your inbox and click the verification link to activate your account.
+                </p>
+                <Link
+                  to="/login"
+                  className="inline-block mt-3 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                  Go to Login →
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Registration Form */}
         <form onSubmit={handleSubmit} className="space-y-4">

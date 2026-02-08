@@ -40,6 +40,7 @@ function XeroxRegister() {
     setError(null);
     
     try {
+      console.log(apiBaseUrl)
       const response = await axios.post(`${apiBaseUrl}/api/xerox/register`, {
         name: formData.name,
         email: formData.email,
