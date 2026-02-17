@@ -76,7 +76,7 @@ function Profile() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/dashboard" className="flex items-center">
-              <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
@@ -96,16 +96,16 @@ function Profile() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Profile Header */}
-          <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-12">
+          <div className="bg-linear-to-r from-blue-600 to-blue-600 px-6 py-12">
             <div className="flex items-center space-x-6">
               <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
-                <span className="text-4xl font-bold text-indigo-600">
+                <span className="text-4xl font-bold text-blue-600">
                   {userData.name.split(' ').map(n => n[0]).join('')}
                 </span>
               </div>
               <div className="text-white">
                 <h1 className="text-3xl font-bold">{userData.name}</h1>
-                <p className="text-indigo-100 mt-1">{userData.email}</p>
+                <p className="text-blue-100 mt-1">{userData.email}</p>
               </div>
             </div>
           </div>
@@ -117,7 +117,7 @@ function Profile() {
               {!isEditing ? (
                 <button
                   onClick={handleEdit}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
                   Edit Profile
                 </button>
@@ -131,7 +131,7 @@ function Profile() {
                   </button>
                   <button
                     onClick={handleSave}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                   >
                     Save Changes
                   </button>
@@ -148,7 +148,7 @@ function Profile() {
                     name="name"
                     value={editData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
                 ) : (
                   <p className="text-gray-900 text-lg">{userData.name}</p>
@@ -169,7 +169,7 @@ function Profile() {
                     name="phone"
                     value={editData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
                 ) : (
                   <p className="text-gray-900 text-lg">{userData.phone}</p>
@@ -181,7 +181,7 @@ function Profile() {
           {/* Account Actions */}
           <div className="border-t px-6 py-4 bg-gray-50">
             <div className="flex justify-between items-center">
-              <button className="text-indigo-600 hover:text-indigo-700 font-medium">
+              <button className="text-blue-600 hover:text-blue-700 font-medium">
                 Change Password
               </button>
               <button className="text-red-600 hover:text-red-700 font-medium">

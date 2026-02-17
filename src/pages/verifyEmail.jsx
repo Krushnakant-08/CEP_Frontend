@@ -52,14 +52,14 @@ function VerifyEmail() {
   }, [searchParams, apiBaseUrl]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8">
         <div className="text-center">
           {/* Icon */}
           {status === "verifying" && (
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4 animate-pulse">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4 animate-pulse">
               <svg
-                className="w-8 h-8 text-indigo-600 animate-spin"
+                className="w-8 h-8 text-blue-600 animate-spin"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -141,7 +141,7 @@ function VerifyEmail() {
               </p>
               <Link
                 to="/login"
-                className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
               >
                 Go to Login
               </Link>
@@ -159,7 +159,7 @@ function VerifyEmail() {
               <div className="space-y-3">
                 <Link
                   to="/resend-verification"
-                  className="block w-full bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                  className="block w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                 >
                   Resend Verification Email
                 </Link>

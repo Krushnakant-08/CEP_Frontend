@@ -43,7 +43,7 @@ function Help() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/dashboard" className="flex items-center">
-              <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
@@ -75,7 +75,7 @@ function Help() {
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">Email Support</h3>
             <p className="text-sm text-gray-600 mb-3">Get help via email</p>
-            <a href="mailto:support@printhub.com" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+            <a href="mailto:support@printhub.com" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
               support@printhub.com
             </a>
           </div>
@@ -88,21 +88,21 @@ function Help() {
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
             <p className="text-sm text-gray-600 mb-3">Call us during work hours</p>
-            <a href="tel:+919876543210" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+            <a href="tel:+919876543210" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
               +91 98765 43210
             </a>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
             <h3 className="font-semibold text-gray-900 mb-2">Visit Us</h3>
             <p className="text-sm text-gray-600 mb-3">Campus Xerox Center</p>
-            <p className="text-indigo-600 text-sm font-medium">
+            <p className="text-blue-600 text-sm font-medium">
               Main Building, Ground Floor
             </p>
           </div>
@@ -133,12 +133,12 @@ function Help() {
         </div>
 
         {/* Still Need Help */}
-        <div className="mt-12 bg-indigo-50 border border-indigo-200 rounded-lg p-8 text-center">
+        <div className="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
           <h3 className="text-xl font-bold text-gray-900 mb-2">Still need help?</h3>
           <p className="text-gray-600 mb-4">Our support team is here to assist you</p>
           <a
             href="mailto:support@printhub.com"
-            className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
+            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             Contact Support
           </a>

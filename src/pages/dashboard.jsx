@@ -159,17 +159,25 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header userName={dashboardData?.user?.name || "User"} userEmail={dashboardData?.user?.email || ""} />
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-blue-100 to-indigo-100 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute w-96 h-96 bg-blue-200/30 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
+        <div className="absolute w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl top-1/2 -right-48 animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute w-64 h-64 bg-blue-300/30 rounded-full blur-3xl bottom-0 left-1/3 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+      </div>
+      
+      <div className="relative z-10">
+        <Header userName={dashboardData?.user?.name || "User"} userEmail={dashboardData?.user?.email || ""} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-blue-100/50 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center">
-              <div className="shrink-0 bg-blue-100 rounded-lg p-3">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="shrink-0 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl p-3 shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
@@ -180,10 +188,10 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-green-100/50 hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center">
-              <div className="shrink-0 bg-green-100 rounded-lg p-3">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="shrink-0 bg-linear-to-br from-green-500 to-green-600 rounded-xl p-3 shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -196,15 +204,15 @@ function Dashboard() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Upload New Document</h2>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-500 transition">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 mb-8 border border-blue-100/50">
+          <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">Upload New Document</h2>
+          <div className="border-2 border-dashed border-blue-200 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-300">
+            <svg className="mx-auto h-12 w-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
             <div className="mt-4">
               <label htmlFor="file-upload" className="cursor-pointer">
-                <span className="mt-2 block text-sm font-medium text-gray-900">
+                <span className="mt-2 block text-sm font-semibold text-gray-900">
                   {selectedFile ? `${selectedFile.name} (${pdfPageCount} ${pdfPageCount === 1 ? 'page' : 'pages'})` : "Drop your PDF here, or click to browse"}
                 </span>
                 <input
@@ -223,27 +231,27 @@ function Dashboard() {
             <div className="mt-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-gray-700">Print Options</span>
-                <span className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                   {pdfPageCount} {pdfPageCount === 1 ? 'Page' : 'Pages'}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Number of Copies</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Number of Copies</label>
                   <input 
                     type="number" 
                     min="1" 
                     value={copies}
                     onChange={(e) => setCopies(parseInt(e.target.value) || 1)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" 
+                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all hover:border-blue-300" 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Print Type</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Print Type</label>
                   <select 
                     value={printType}
                     onChange={(e) => setPrintType(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all hover:border-blue-300"
                   >
                     <option value="blackAndWhite">Black & White (₹2/page)</option>
                     <option value="color">Color (₹10/page)</option>
@@ -253,14 +261,14 @@ function Dashboard() {
               <button
                 onClick={handleUpload}
                 disabled={isUploading}
-                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-300 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/30"
               >
                 {isUploading ? `Uploading... ${uploadProgress}%` : "Upload & Submit for Printing"}
               </button>
               {isUploading && (
                 <div className="mt-3 bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-indigo-600 h-full transition-all duration-300"
+                    className="bg-blue-600 h-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
                 </div>
@@ -270,9 +278,9 @@ function Dashboard() {
         </div>
 
         {/* Pending Orders */}
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Pending Orders</h2>
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl mb-8 border border-blue-100/50">
+          <div className="px-6 py-4 border-b border-blue-100">
+            <h2 className="text-xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Pending Orders</h2>
           </div>
           <div className="divide-y divide-gray-200">
             {pendingOrders.length === 0 ? (
@@ -307,12 +315,12 @@ function Dashboard() {
                           href={order.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition font-medium"
+                          className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition font-medium"
                         >
                           View
                         </a>
                       )}
-                      <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                      <button className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                         onClick={() => setSelectedOrder(order)}
                       >
                         Details
@@ -353,7 +361,7 @@ function Dashboard() {
                         href={order.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition font-medium"
+                        className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition font-medium"
                       >
                         View
                       </a>
@@ -432,7 +440,7 @@ function Dashboard() {
                 )}
                 <div>
                   <p className="text-sm text-gray-600">Price</p>
-                  <p className="font-medium text-lg text-indigo-600">₹{selectedOrder.price}</p>
+                  <p className="font-medium text-lg text-blue-600">₹{selectedOrder.price}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Ordered At</p>
@@ -510,6 +518,7 @@ function Dashboard() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
