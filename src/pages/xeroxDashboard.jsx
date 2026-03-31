@@ -114,6 +114,28 @@ function XeroxDashboard() {
     );
   };
 
+  const getPaymentBadge = (paymentStatus) => {
+    const styles = {
+      pending: "bg-orange-100 text-orange-800 border-orange-300",
+      paid: "bg-emerald-100 text-emerald-800 border-emerald-300",
+      failed: "bg-red-100 text-red-800 border-red-300"
+    };
+    
+    const labels = {
+      pending: "💳 Unpaid",
+      paid: "✅ Paid",
+      failed: "❌ Payment Failed"
+    };
+
+    if (!paymentStatus) return null;
+
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${styles[paymentStatus]}`}>
+        {labels[paymentStatus]}
+      </span>
+    );
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-IN', {
       day: 'numeric',
@@ -294,6 +316,7 @@ function XeroxDashboard() {
                         <div className="flex items-center space-x-3">
                           <h3 className="text-lg font-semibold text-gray-900">{order.fileName || "Document.pdf"}</h3>
                           {getStatusBadge(order.status)}
+                          {getPaymentBadge(order.paymentStatus)}
                         </div>
                         <p className="text-sm text-gray-500 mt-1">Order ID: {order.id}</p>
                         <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
@@ -372,6 +395,10 @@ function XeroxDashboard() {
                   {getStatusBadge(selectedOrder.status)}
                 </div>
                 <div>
+                  <p className="text-sm text-gray-600">Payment</p>
+                  {getPaymentBadge(selectedOrder.paymentStatus)}
+                </div>
+                <div>
                   <p className="text-sm text-gray-600">File Name</p>
                   <p className="font-medium">{selectedOrder.fileName}</p>
                 </div>
@@ -408,9 +435,9 @@ function XeroxDashboard() {
               </div>
 
               {/* File Preview/Link */}
-              {selectedOrder.fileUrl && (
-                <div className="mt-4 pt-4 border-t">
-                  <h3 className="font-semibold text-gray-900 mb-2">Document</h3>
+              <div className="mt-4 pt-4 border-t">
+                <h3 className="font-semibold text-gray-900 mb-2">Document</h3>
+                {selectedOrder.fileUrl ? (
                   <a 
                     href={selectedOrder.fileUrl} 
                     target="_blank" 
@@ -422,8 +449,15 @@ function XeroxDashboard() {
                     </svg>
                     View/Download Document
                   </a>
-                </div>
-              )}
+                ) : (
+                  <span className="text-gray-400 text-sm font-medium flex items-center cursor-not-allowed">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    File Expired (auto-deleted after 2 weeks)
+                  </span>
+                )}
+              </div>
 
               {/* Customer Details */}
               {selectedOrder.customer && (

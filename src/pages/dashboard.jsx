@@ -79,7 +79,6 @@ function Dashboard() {
     try {
       // First, upload to Cloudinary
       const cloudinaryFormData = new FormData();
-      // console.log('Uploading file to Cloudinary:', selectedFile);
       
       cloudinaryFormData.append('file', selectedFile);
       cloudinaryFormData.append('upload_preset', 'Community_Prog'); 
@@ -101,10 +100,7 @@ function Dashboard() {
         }
       );
 
-      // console.log('Cloudinary upload response:', cloudinaryResponse.data);
-      
       // 3. GET THE LINK
-      // The response will now contain the correct /raw/ or /image/ url automatically
       const fileUrl = cloudinaryResponse.data.secure_url;
       setUploadProgress(60);
 
@@ -115,7 +111,6 @@ function Dashboard() {
         printType,
         pages: pdfPageCount
       };
-      // console.log('Sending order data to backend:', orderData);
       
       const token = localStorage.getItem('token');
       const response = await axios.post(`${apiBaseUrl}/api/orders/upload`, orderData, {
@@ -125,23 +120,88 @@ function Dashboard() {
         }
       });
 
-      // console.log('Backend response:', response.data);
-      setUploadProgress(100);
+      setUploadProgress(80);
 
       if (response.data.success) {
-        // console.log('Order created:', response.data.order);
-        // console.log('File URL:', response.data.order.fileUrl);
-        setPendingOrders([response.data.order, ...pendingOrders]);
-        setSelectedFile(null);
-        setCopies(1);
-        setPrintType("blackAndWhite");
-        setPdfPageCount(0);
-        // alert('Document uploaded successfully!');
+        const { razorpayOrderId, razorpayKeyId, amount, currency, order: createdOrder } = response.data;
+
+        // Open Razorpay Checkout
+        const options = {
+          key: razorpayKeyId,
+          amount: amount,
+          currency: currency,
+          name: "Campus E-Print",
+          description: `Print Order: ${createdOrder.fileName}`,
+          order_id: razorpayOrderId,
+          prefill: {
+            name: dashboardData?.user?.name || "",
+            email: dashboardData?.user?.email || "",
+            contact: dashboardData?.user?.phone || "",
+          },
+          notes: {
+            orderId: createdOrder.id,
+            fileName: createdOrder.fileName,
+          },
+          method: {
+            upi: true,
+            card: true,
+            netbanking: true,
+            wallet: true,
+          },
+          theme: {
+            color: "#4F46E5"
+          },
+          handler: async function (paymentResponse) {
+            // Payment successful — verify with backend
+            try {
+              const verifyRes = await axios.post(
+                `${apiBaseUrl}/api/payment/verify`,
+                {
+                  razorpay_order_id: paymentResponse.razorpay_order_id,
+                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                  razorpay_signature: paymentResponse.razorpay_signature,
+                  orderId: createdOrder.id
+                },
+                {
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                  }
+                }
+              );
+
+              if (verifyRes.data.success) {
+                // Payment verified — update local state
+                const updatedOrder = { ...createdOrder, status: "processing", paymentStatus: "paid" };
+                setPendingOrders([updatedOrder, ...pendingOrders]);
+                setSelectedFile(null);
+                setCopies(1);
+                setPrintType("blackAndWhite");
+                setPdfPageCount(0);
+                setUploadProgress(100);
+                alert('Payment successful! Your order is being processed.');
+              }
+            } catch (verifyError) {
+              console.error('Payment verification failed:', verifyError);
+              alert('Payment verification failed. Please contact support.');
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              alert('Payment cancelled. Your order will be auto-cancelled in 5 minutes if not paid.');
+            }
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+          alert('Payment failed: ' + response.error.description);
+        });
+        rzp.open();
       }
       setIsUploading(false);
     } catch (error) {
-      // console.error('Upload failed:', error);
-      alert('Failed to upload file. Please try again.');
+      alert('Failed to create order. Please try again.');
       setIsUploading(false);
       setUploadProgress(0);
     }
@@ -310,7 +370,7 @@ function Dashboard() {
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                         {order.status === "processing" ? "Processing" : "Ready to Collect"}
                       </span>
-                      {order.fileUrl && (
+                      {order.fileUrl ? (
                         <a
                           href={order.fileUrl}
                           target="_blank"
@@ -319,6 +379,10 @@ function Dashboard() {
                         >
                           View
                         </a>
+                      ) : (
+                        <span className="px-3 py-1 bg-gray-200 text-gray-500 text-sm rounded-lg font-medium cursor-not-allowed">
+                          File Expired
+                        </span>
                       )}
                       <button className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                         onClick={() => setSelectedOrder(order)}
@@ -356,7 +420,7 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    {order.fileUrl && (
+                    {order.fileUrl ? (
                       <a
                         href={order.fileUrl}
                         target="_blank"
@@ -365,6 +429,10 @@ function Dashboard() {
                       >
                         View
                       </a>
+                    ) : (
+                      <span className="px-3 py-1 bg-gray-200 text-gray-500 text-sm rounded-lg font-medium cursor-not-allowed">
+                        File Expired
+                      </span>
                     )}
                     <button 
                       onClick={() => setSelectedOrder(order)}
@@ -449,9 +517,9 @@ function Dashboard() {
               </div>
 
               {/* File URL Info */}
-              {selectedOrder.fileUrl && (
-                <div className="mt-4 pt-4 border-t">
-                  <h3 className="font-semibold text-gray-900 mb-2">Document</h3>
+              <div className="mt-4 pt-4 border-t">
+                <h3 className="font-semibold text-gray-900 mb-2">Document</h3>
+                {selectedOrder.fileUrl ? (
                   <a
                     href={selectedOrder.fileUrl}
                     target="_blank"
@@ -463,8 +531,15 @@ function Dashboard() {
                     </svg>
                     Download
                   </a>
-                </div>
-              )}
+                ) : (
+                  <span className="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    File Expired (auto-deleted after 2 weeks)
+                  </span>
+                )}
+              </div>
 
               {/* Notes */}
               {selectedOrder.notes && (
